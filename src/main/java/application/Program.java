@@ -18,6 +18,7 @@ public class Program {
 		Statement statement = null;
 		ResultSet resultSet = null;
 		PreparedStatement preparedStatement = null;
+		PreparedStatement preparedStatement2 = null;
 
 		try {
 			connection = DB.getConnection();
@@ -28,8 +29,8 @@ public class Program {
 				System.out.println(resultSet.getInt("Id") + ", " + resultSet.getString("Name"));
 			}
 
-			preparedStatement = connection.prepareStatement("insert into seller "
-					+ "(Name, Email, BirthDate, BaseSalary, DepartmentId) " + "values " + "(?, ?, ?, ?, ?)",
+			preparedStatement = connection.prepareStatement(
+					"insert into seller (Name, Email, BirthDate, BaseSalary, DepartmentId) values (?, ?, ?, ?, ?)",
 					Statement.RETURN_GENERATED_KEYS);
 
 			preparedStatement.setString(1, "Weder Monteiro");
@@ -42,13 +43,23 @@ public class Program {
 
 			if (linhasAlteradas > 0) {
 				ResultSet resultSet2 = preparedStatement.getGeneratedKeys();
-				while(resultSet2.next()) {
+				while (resultSet2.next()) {
 					int id = resultSet2.getInt(1);
 					System.out.println("Feito! Id = " + id);
 				}
 			} else {
 				System.out.println("Nenhuma linha alterada!");
 			}
+
+			preparedStatement2 = connection
+					.prepareStatement("update seller set BaseSalary = BaseSalary + ? where (DepartmentId = ?)");
+			
+			preparedStatement2.setDouble(1, 200.0);
+			preparedStatement2.setInt(2, 2);
+			
+			int linhasAlteradas2 = preparedStatement2.executeUpdate();
+			
+			System.out.println("Linhas alteradas: " + linhasAlteradas2);
 		} catch (SQLException | ParseException e) {
 			e.printStackTrace();
 		} finally {
