@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import Classes.DB;
+import Exceptions.DbIntegrityException;
 
 public class Program {
 
@@ -19,12 +20,12 @@ public class Program {
 		ResultSet resultSet = null;
 		PreparedStatement preparedStatement = null;
 		PreparedStatement preparedStatement2 = null;
+		PreparedStatement preparedStatement3 = null;
 
 		try {
 			connection = DB.getConnection();
 			statement = connection.createStatement();
 			resultSet = statement.executeQuery("select * from seller");
-
 			while (resultSet.next()) {
 				System.out.println(resultSet.getInt("Id") + ", " + resultSet.getString("Name"));
 			}
@@ -32,15 +33,12 @@ public class Program {
 			preparedStatement = connection.prepareStatement(
 					"insert into seller (Name, Email, BirthDate, BaseSalary, DepartmentId) values (?, ?, ?, ?, ?)",
 					Statement.RETURN_GENERATED_KEYS);
-
 			preparedStatement.setString(1, "Weder Monteiro");
 			preparedStatement.setString(2, "weder_monteiro@outlook.com.br");
 			preparedStatement.setDate(3, new java.sql.Date(simpleDateFormat.parse("16/09/1994").getTime()));
 			preparedStatement.setDouble(4, 3000.0);
 			preparedStatement.setInt(5, 4);
-
 			int linhasAlteradas = preparedStatement.executeUpdate();
-
 			if (linhasAlteradas > 0) {
 				ResultSet resultSet2 = preparedStatement.getGeneratedKeys();
 				while (resultSet2.next()) {
@@ -53,19 +51,23 @@ public class Program {
 
 			preparedStatement2 = connection
 					.prepareStatement("update seller set BaseSalary = BaseSalary + ? where (DepartmentId = ?)");
-			
 			preparedStatement2.setDouble(1, 200.0);
 			preparedStatement2.setInt(2, 2);
-			
 			int linhasAlteradas2 = preparedStatement2.executeUpdate();
-			
 			System.out.println("Linhas alteradas: " + linhasAlteradas2);
+			
+			preparedStatement3 = connection.prepareStatement("delete from department where Id = ?");
+			preparedStatement.setInt(1, 2);
+			int linhasAlteradas3 = preparedStatement2.executeUpdate();
+			System.out.println("Linhas deletadas: " + linhasAlteradas3);
 		} catch (SQLException | ParseException e) {
-			e.printStackTrace();
+			throw new DbIntegrityException(e.getMessage());
 		} finally {
 			DB.closeResultSet(resultSet);
 			DB.closeStatement(statement);
 			DB.closeStatement(preparedStatement);
+			DB.closeStatement(preparedStatement2);
+			DB.closeStatement(preparedStatement3);
 			DB.closeConnection();
 		}
 	}
