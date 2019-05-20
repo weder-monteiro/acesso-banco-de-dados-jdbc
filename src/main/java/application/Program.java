@@ -9,6 +9,7 @@ public class Program {
 	public static void main(String[] args) {
 		SellerDAO sellerDAO = new SellerDAO(DB.getConnection());
 		
+		System.out.println("=== TEST 1: seller findById ===");
 		Seller seller = sellerDAO.findById(3);
 		DB.closeConnection();
 		

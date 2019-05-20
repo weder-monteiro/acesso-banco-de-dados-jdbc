@@ -8,8 +8,8 @@ import java.util.List;
 
 import Classes.DB;
 import Exceptions.DbException;
+import Factory.SellerFactory;
 import model.dao.GenericoDAO;
-import model.entities.Department;
 import model.entities.Seller;
 
 public class SellerDAO implements GenericoDAO<Seller, Integer> {
@@ -44,11 +44,7 @@ public class SellerDAO implements GenericoDAO<Seller, Integer> {
 			preparedStatement.setInt(1, id);
 			resultSet = preparedStatement.executeQuery();
 			if (resultSet.next()) {
-				Department department = new Department(resultSet.getInt("DepartmentId"),
-						resultSet.getString("DepName"));
-				Seller seller = new Seller(resultSet.getInt("Id"), resultSet.getString("Name"),
-						resultSet.getString("Email"), resultSet.getDate("BirthDate"), resultSet.getDouble("BaseSalary"),
-						department);
+				Seller seller = SellerFactory.getSeller(resultSet);
 				return seller;
 			}
 			return null;
