@@ -39,6 +39,13 @@ public class Program {
 		sellerUpdate.setName("Marta" + new Random().nextInt());
 		sellerDAO.update(sellerUpdate);
 		System.out.println("Atualizado" + sellerUpdate);
+		
+		System.out.println("\n=== TEST 6: seller delete ===");
+		sellerDAO.deleteById(sellerInsert.getId());
+		System.out.println("Deletado");
+		for (Seller sellerTemp : sellerDAO.findByDepartment(department)) {
+			System.out.println(sellerTemp);
+		}
 
 		DB.closeConnection();
 	}
