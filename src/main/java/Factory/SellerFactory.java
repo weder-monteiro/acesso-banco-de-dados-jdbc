@@ -13,4 +13,9 @@ public class SellerFactory {
 		return new Seller(resultSet.getInt("Id"), resultSet.getString("Name"), resultSet.getString("Email"),
 				resultSet.getDate("BirthDate"), resultSet.getDouble("BaseSalary"), department);
 	}
+	
+	public static Seller getSeller(ResultSet resultSet, Department department) throws SQLException {
+		return new Seller(resultSet.getInt("Id"), resultSet.getString("Name"), resultSet.getString("Email"),
+				resultSet.getDate("BirthDate"), resultSet.getDouble("BaseSalary"), department);
+	}
 }
