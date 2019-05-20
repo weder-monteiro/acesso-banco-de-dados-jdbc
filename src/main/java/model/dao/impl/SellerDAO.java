@@ -62,29 +62,56 @@ public class SellerDAO implements GenericoDAO<Seller, Integer> {
 
 	@Override
 	public List<Seller> findAll() {
-		return null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<Seller> sellers = new ArrayList<>();
+		Map<Integer, Department> departmentMap = new HashMap<>();
+
+		try {
+			preparedStatement = connection.prepareStatement(
+					"SELECT seller.*,department.Name as DepName FROM seller INNER JOIN department ON seller.DepartmentId = department.Id ORDER BY Name");
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				Department departmentTemp = departmentMap.get(resultSet.getInt("DepartmentId"));
+
+				if (departmentTemp == null) {
+					departmentTemp = DepartmentFactory.getDepartment(resultSet);
+					departmentMap.put(resultSet.getInt("DepartmentId"), departmentTemp);
+				}
+
+				Seller seller = SellerFactory.getSeller(resultSet, departmentTemp);
+				sellers.add(seller);
+			}
+			return sellers;
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(preparedStatement);
+			DB.closeResultSet(resultSet);
+		}
 	}
 
 	public List<Seller> findByDepartment(Department department) {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		List<Seller> sellers = new ArrayList<>();
-		Map<Integer, Department> departmentMap = new HashMap<>(); 
+		Map<Integer, Department> departmentMap = new HashMap<>();
 
 		try {
 			preparedStatement = connection.prepareStatement(
 					"SELECT seller.*,department.Name as DepName FROM seller INNER JOIN department ON seller.DepartmentId = department.Id WHERE DepartmentId = ? ORDER BY Name");
 			preparedStatement.setInt(1, department.getId());
 			resultSet = preparedStatement.executeQuery();
-			
+
 			while (resultSet.next()) {
 				Department departmentTemp = departmentMap.get(resultSet.getInt("DepartmentId"));
-				
-				if(departmentTemp == null) {
+
+				if (departmentTemp == null) {
 					departmentTemp = DepartmentFactory.getDepartment(resultSet);
 					departmentMap.put(resultSet.getInt("DepartmentId"), departmentTemp);
 				}
-				
+
 				Seller seller = SellerFactory.getSeller(resultSet, departmentTemp);
 				sellers.add(seller);
 			}
