@@ -2,11 +2,11 @@ package model.dao;
 
 import java.util.List;
 
-public interface GenericoDAO<T> {
+public interface GenericoDAO<T, K> {
 	
 	void insert(T t);
 	void update(T t);
-	void deleteById(Integer id);
-	T findById(Integer id);
+	void deleteById(K id);
+	T findById(K id);
 	List<T> findAll();
 }
