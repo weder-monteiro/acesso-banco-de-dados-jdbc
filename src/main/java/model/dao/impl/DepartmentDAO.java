@@ -5,18 +5,18 @@ import java.util.List;
 import model.dao.GenericoDAO;
 import model.entities.Department;
 
-public class DepartmentDAO implements GenericoDAO<Department, Integer>{
+public class DepartmentDAO implements GenericoDAO<Department, Integer> {
 
 	@Override
-	public void insert(Department t) {		
+	public void insert(Department t) {
 	}
 
 	@Override
-	public void update(Department t) {		
+	public void update(Department t) {
 	}
 
 	@Override
-	public void deleteById(Integer id) {		
+	public void deleteById(Integer id) {
 	}
 
 	@Override
