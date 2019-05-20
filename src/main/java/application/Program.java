@@ -1,6 +1,7 @@
 package application;
 
 import java.util.Date;
+import java.util.Random;
 
 import Classes.DB;
 import model.dao.impl.SellerDAO;
@@ -28,10 +29,16 @@ public class Program {
 		}
 
 		System.out.println("\n=== TEST 4: seller insert ===");
-		Seller sellerInsert = new Seller(null, "Weder", "weder_monteiro@outlook.com.br", new Date(), 6200.0,
+		Seller sellerInsert = new Seller(null, "Weder Monteiro", "weder_monteiro@outlook.com.br", new Date(), 6200.0,
 				department);
 		sellerDAO.insert(sellerInsert);
 		System.out.println("Inserido novo id = " + sellerInsert.getId());
+		
+		System.out.println("\n=== TEST 5: seller update ===");
+		Seller sellerUpdate = sellerDAO.findById(1);
+		sellerUpdate.setName("Marta" + new Random().nextInt());
+		sellerDAO.update(sellerUpdate);
+		System.out.println("Atualizado" + sellerUpdate);
 
 		DB.closeConnection();
 	}
